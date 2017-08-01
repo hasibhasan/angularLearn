@@ -9,19 +9,23 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './_guards/index';
 import { routing } from './app.routing';
+import { NvD3Component } from 'ng2-nvd3';
+import 'd3';
+import 'nvd3';
+import { DataService } from './services/data.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent
-    
+    LoginComponent,
+    NvD3Component   
     
   ],
   imports: [
     BrowserModule,HttpModule,routing,FormsModule
   ],
-  providers: [AuthGuard, UserService, AuthenticationService],
+  providers: [AuthGuard, UserService, AuthenticationService,DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -4,13 +4,13 @@ import 'rxjs/Rx';
 import {Observable} from 'rxjs/Rx'
 
 @Injectable()
-export class UserService {
+export class DataService {
 
  constructor (private http: Http) {}
 
-getData():Observable<any>{
-    console.log("Here");
-       return this.http.get('http://192.168.3.57:7000/api/profile/').map((response:Response) => {        
+getData():Observable<any>{    
+       return this.http.get('http://127.0.0.1:8000/chartData/').map((response:Response) => {        
+           console.log(response.json());
         return response.json();
     });
     } 
