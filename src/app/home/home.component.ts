@@ -11,39 +11,39 @@ declare let d3: any;
 export class HomeComponent implements OnInit {
   options;
   data;
+  aggreg = ["sum", "avg", "min", "max"];  
   constructor( private dataService: DataService) { }
 
    ngOnInit() {
 
-    this.getData();
-    // this.options = {
-    //   chart: {
-    //     type: 'discreteBarChart',
-    //     height: 450,
-    //     margin : {
-    //       top: 20,
-    //       right: 20,
-    //       bottom: 50,
-    //       left: 55
-    //     },
-    //     x: function(d){return d.label;},
-    //     y: function(d){return d.value;},
-    //     showValues: true,
-    //     valueFormat: function(d){
-    //       return d3.format(',.4f')(d);
-    //     },
-    //     duration: 500,
-    //     xAxis: {
-    //       axisLabel: 'X Axis'
-    //     },
-    //     yAxis: {
-    //       axisLabel: 'Y Axis',
-    //       axisLabelDistance: -10
-    //     } 
-    //   }
-    // }
     
-    
+    this.options = {
+      chart: {
+        type: 'discreteBarChart',
+        height: 450,
+        margin : {
+          top: 20,
+          right: 20,
+          bottom: 50,
+          left: 55
+        },
+        x: function(d){return d.label;},
+        y: function(d){return d.value;},
+        showValues: true,
+        valueFormat: function(d){
+          return d3.format(',.4f')(d);
+        },
+        duration: 500,
+        xAxis: {
+          axisLabel: 'X Axis'
+        },
+        yAxis: {
+          axisLabel: 'Y Axis',
+          axisLabelDistance: -10
+        } 
+      }
+    }   
+    this.getData("sum");
     // this.data = [
     // {
     //   key: "Cumulative Return",
@@ -91,9 +91,22 @@ export class HomeComponent implements OnInit {
     // ];
 
   }
-  getData(){
-      this.dataService.getData().subscribe(data => {this.data = data;console.log(this.data)});
+  valueChange(aggr){
+      this.getData(aggr)  
   }
+  
+  
+  getData(aggr){
+      this.dataService.getData(aggr).subscribe(data => {                           
+           this.data = [
+           {
+              key: "Cumulative Return",
+              values: data
+            }
+          ];
+      });
+  }
+  
 
 
 

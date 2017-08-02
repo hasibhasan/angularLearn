@@ -8,9 +8,8 @@ export class DataService {
 
  constructor (private http: Http) {}
 
-getData():Observable<any>{    
-       return this.http.get('http://127.0.0.1:8000/chartData/').map((response:Response) => {        
-           console.log(response.json());
+getData(aggr):Observable<any>{    
+       return this.http.get('http://127.0.0.1:8000/chartData/?agg='+aggr).map((response:Response) => {        
         return response.json();
     });
     } 

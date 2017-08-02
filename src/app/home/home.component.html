@@ -1,3 +1,10 @@
 <div>
+<select (change)="valueChange($event.target.value)" required>
+      <option *ngFor="let aggr of aggreg" [ngValue]="aggr" > {{aggr}} </option>
+</select>
+
+</div>
+
+<div>
       <nvd3 [options]="options" [data]="data"></nvd3>
 </div>
