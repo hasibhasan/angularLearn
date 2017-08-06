@@ -9,7 +9,7 @@ export class DataService {
  constructor (private http: Http) {}
 
 getData(aggr):Observable<any>{    
-       return this.http.get('http://127.0.0.1:8000/chartData/?agg='+aggr).map((response:Response) => {        
+       return this.http.get('http://127.0.0.1:8000/custom/get/?agg='+aggr).map((response:Response) => {        
         return response.json();
     });
     } 

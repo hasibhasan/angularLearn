@@ -10,7 +10,7 @@ export class UserService {
 
 getData():Observable<any>{
     console.log("Here");
-       return this.http.get('http://192.168.3.57:7000/api/profile/').map((response:Response) => {        
+       return this.http.get('http://192.168.3.57:9000/api/profile/').map((response:Response) => {        
         return response.json();
     });
     } 
