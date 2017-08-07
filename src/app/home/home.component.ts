@@ -9,15 +9,19 @@ declare let d3: any;
   encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit {
-  options;
+  optionsbar;
+  optionspie;
+  optionsline;
+  categories=[];
+  value_lists=[];
   data;
+  datapie;
+  dataline;
   aggreg = ["sum", "avg", "min", "max"];  
   constructor( private dataService: DataService) { }
 
-   ngOnInit() {
-
-    
-    this.options = {
+   ngOnInit() {         
+    this.optionsbar = {
       chart: {
         type: 'discreteBarChart',
         height: 450,
@@ -25,7 +29,7 @@ export class HomeComponent implements OnInit {
           top: 20,
           right: 50,
           bottom: 100,
-          left: 100
+          left: 100 
         },
         x: function(d){return d.label;},
         y: function(d){return d.value;},
@@ -46,58 +50,34 @@ export class HomeComponent implements OnInit {
       }
     }   
     this.getData("sum");
-    // this.data = [
-    // {
-    //   key: "Cumulative Return",
-    //   values: this.data
-    // }
-    // ];
-    // this.data = [
-    //   {
-    //     key: "Cumulative Return",
-    //     values: [
-    //       {
-    //         "label" : "A" ,
-    //         "value" : -29.765957771107
-    //       } ,
-    //       {
-    //         "label" : "B" ,
-    //         "value" : 0
-    //       } ,
-    //       {
-    //         "label" : "C" ,
-    //         "value" : 32.807804682612
-    //       } ,
-    //       {
-    //         "label" : "D" ,
-    //         "value" : 196.45946739256
-    //       } ,
-    //       {
-    //         "label" : "E" ,
-    //         "value" : 0.19434030906893
-    //       } ,
-    //       {
-    //         "label" : "F" ,
-    //         "value" : -98.079782601442
-    //       } ,
-    //       {
-    //         "label" : "G" ,
-    //         "value" : -13.925743130903
-    //       } ,
-    //       {
-    //         "label" : "H" ,
-    //         "value" : -5.1387322875705
-    //       }
-    //     ]
-    //   }
-    // ];
+
+    this.optionspie = {
+    chart: {
+      type: 'pieChart',
+      height: 600,
+      x: function(d){return d.label;},
+      y: function(d){return d.value;},
+      showLabels: true,
+      duration: 500,
+      labelThreshold: 0.01,
+      labelSunbeamLayout: true,
+      legend: {
+        margin: {
+          top: 5,
+          right: 35,
+          bottom: 5,
+          left: 0
+        }
+      }
+    }
+  }
+  this.getDataPie("sum"); 
+  this.getDataline("sum");
 
   }
   valueChange(aggr){
       this.getData(aggr)  
   }
-  
-  
   getData(aggr){
       this.dataService.getData(aggr).subscribe(data => {                           
            this.data = [
@@ -107,6 +87,56 @@ export class HomeComponent implements OnInit {
             }
           ];
       });
+  }
+  getDataPie(aggr){
+      this.dataService.getData(aggr).subscribe(data => {                           
+           this.datapie = data        
+      });
+  }
+  getDataline(aggr){
+      this.dataService.getData(aggr).subscribe(data => {                           
+           this.dataline = [
+           {
+              key: "Cumulative Return",
+              values: data
+            }
+          ];         
+          this.drawLine(this.dataline);           
+      });
+  }
+  drawLine(data){
+     for (var i = 0; i < data[0].values.length; i++) {
+                this.value_lists.push(data[0].values[i].id);
+                this.categories.push(data[0].values[i].label);
+    }
+    this.optionsline = {
+    chart: {
+      type: 'lineChart',
+      height: 450,
+      margin : {
+        top: 20,
+        right: 20,
+        bottom: 40,
+        left: 55
+      },     
+      y: function(d){ return d.value },
+      useInteractiveGuideline: true,
+      xAxis: { 
+        tickValues:this.value_lists, 
+        tickFormat: function(i){
+          return this.categories[i];
+        },
+      },
+      yAxis: {
+        axisLabel: 'y',        
+        axisLabelDistance: -10,
+        tickFormat: function(d){
+          return d3.format('.02f')(d);
+        },
+      },
+    }
+  }
+    
   }
   
 
