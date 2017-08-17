@@ -1,5 +1,6 @@
 import { Component, OnInit,ViewEncapsulation  } from '@angular/core';
 import { DataService } from '../services/data.service';
+import { variables } from '../Shared/varibale';
 declare let d3: any;
 
 @Component({
@@ -14,9 +15,11 @@ export class HomeComponent implements OnInit {
   optionsline;
   categories=[];
   value_lists=[];
+  
   data;
   datapie;
   dataline;
+  finalData;
   aggreg = ["sum", "avg", "min", "max"];  
   constructor( private dataService: DataService) { }
 
@@ -75,40 +78,59 @@ export class HomeComponent implements OnInit {
   this.getDataline("sum");
 
   }
-  valueChange(aggr){
-      this.getData(aggr)  
-  }
-  getData(aggr){
-      this.dataService.getData(aggr).subscribe(data => {                           
-           this.data = [
+  valueChange(aggr){      
+         this.data = [
            {
               key: "Cumulative Return",
-              values: data
+              values: this.finalData[0][aggr]
             }
           ];
-      });
+  }
+  getData(aggr){   
+      let items: variables[] = [];   
+      items.push({variable_name:"district", type:"string",collection_name:"teacher_final_data",query:"", axis:"x" });
+      items.push({variable_name:"salary_basic", type:"int",collection_name:"teacher_final_data",query:"", axis:"y" });
+      var curScop = this;      
+      this.dataService.getData(items).subscribe(data => {                                  
+           curScop.finalData =data;
+           curScop.data = [
+           {
+              key: "Cumulative Return",
+              values: data[0].sum
+            }
+          ];
+      });    
+
   }
   getDataPie(aggr){
-      this.dataService.getData(aggr).subscribe(data => {                           
-           this.datapie = data        
+      let items: variables[] = [];   
+      items.push({variable_name:"district", type:"string",collection_name:"teacher_final_data",query:"", axis:"x" });
+      items.push({variable_name:"salary_basic", type:"int",collection_name:"teacher_final_data",query:"", axis:"y" });
+      this.dataService.getData(items).subscribe(data => {                           
+           this.datapie = data[0].sum      
       });
   }
   getDataline(aggr){
-      this.dataService.getData(aggr).subscribe(data => {                           
+      let items: variables[] = [];   
+      items.push({variable_name:"district", type:"string",collection_name:"teacher_final_data",query:"", axis:"x" });
+      items.push({variable_name:"salary_basic", type:"int",collection_name:"teacher_final_data",query:"", axis:"y" });
+      this.dataService.getData(items).subscribe(data => {                           
            this.dataline = [
            {
               key: "Cumulative Return",
-              values: data
+              values:data[0].sum  
             }
           ];         
           this.drawLine(this.dataline);           
       });
   }
-  drawLine(data){
-     for (var i = 0; i < data[0].values.length; i++) {
-                this.value_lists.push(data[0].values[i].id);
-                this.categories.push(data[0].values[i].label);
-    }
+  drawLine(data){ 
+    let value_list=[];
+    let categories=[];
+    for (let i = 0; i < data[0].values.length; i++) {
+          value_list.push(data[0].values[i].index_col);
+          categories.push(data[0].values[i].label);
+    }   
     this.optionsline = {
     chart: {
       type: 'lineChart',
@@ -116,16 +138,18 @@ export class HomeComponent implements OnInit {
       margin : {
         top: 20,
         right: 20,
-        bottom: 40,
-        left: 55
+        bottom: 100,
+        left: 100
       },     
       y: function(d){ return d.value },
+      x: function(d){ return d.index_col },
       useInteractiveGuideline: true,
-      xAxis: { 
-        tickValues:this.value_lists, 
-        tickFormat: function(i){
-          return this.categories[i];
-        },
+      xAxis: {    
+          rotateLabels:-35,
+          tickValues: value_list,       
+          tickFormat: function(d){
+            return categories[d]
+          }
       },
       yAxis: {
         axisLabel: 'y',        

@@ -9,7 +9,8 @@ export class DataService {
  constructor (private http: Http) {}
 
 getData(aggr):Observable<any>{    
-       return this.http.get('http://127.0.0.1:8000/custom/get/?agg='+aggr).map((response:Response) => {        
+       let variables = JSON.stringify(aggr); 
+       return this.http.get('http://127.0.0.1:8000/custom/get/?variables='+variables).map((response:Response) => {        
         return response.json();
     });
     } 
